@@ -15,7 +15,7 @@ public class PccStar extends Pcc {
 	}
 
 	public void run() {
-		
+
 		long TpsCommence = System.currentTimeMillis();
 
 		System.out.println("Run PCC-Star de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
@@ -29,7 +29,7 @@ public class PccStar extends Pcc {
 		//mettre le cout d'origine 0 et ajouter au binaryHeap
 		origineLabel.setCout(0);
 		origineLabel.setSommetPere(origineLabel.getSommet());
-		
+
 		double trajetAVol;
 
 		this.tas.insert(origineLabel);
@@ -45,6 +45,8 @@ public class PccStar extends Pcc {
 			this.hmap.put(xSommet, xLabel);
 
 			this.arrayLabel.add(xLabel);
+			this.graphe.getDessin().setColor(Color.green);
+			this.graphe.getDessin().drawPoint(xSommet.longitude,xSommet.latitude,5);
 
 			for (Arc arc : xSommet.tableauArc){
 
@@ -53,11 +55,11 @@ public class PccStar extends Pcc {
 				//System.out.println("ylabel : "+ yLabel.toString());
 
 				double cout = 0;
-				trajetAVol = this.graphe.distance(arc.sommetDepart.longitude, arc.sommetDepart.latitude, destinationSommet.longitude, destinationSommet.latitude);
+				trajetAVol = this.graphe.distance(arc.sommetArrive.longitude, arc.sommetArrive.latitude, destinationSommet.longitude, destinationSommet.latitude);
 
 				if (this.temps){
 					cout = arc.coutArc() ; 
-					trajetAVol = trajetAVol / this.graphe.getVitesse();
+					trajetAVol = (trajetAVol / this.graphe.getVitesse()) / 60.0; //trajet a vol est valeur de temps en minutes
 				} 
 				else {
 					cout = arc.longueur;
@@ -66,7 +68,7 @@ public class PccStar extends Pcc {
 				if (!yLabel.isMarquage()){
 					if (yLabel.getCout() > cout + xLabel.getCout()){
 
-						yLabel.setEstime(/*cout +*/ xLabel.getCout()+ trajetAVol);
+						yLabel.setEstime(cout + xLabel.getCout()+ trajetAVol);
 						yLabel.setCout(cout + xLabel.getCout());
 						yLabel.setSommetPere(xLabel.getSommet());
 
@@ -82,9 +84,9 @@ public class PccStar extends Pcc {
 		}
 
 		this.plusCourtChemin();
-		
+
 		long TpsTermine = System.currentTimeMillis();
-		
+
 		//dessiner
 		this.graphe.getDessin().setColor(Color.BLUE);
 		this.plusCourt.dessineChemin(this.graphe.getDessin());
@@ -92,7 +94,7 @@ public class PccStar extends Pcc {
 		//System.out.println(this.plusCourt.toString());
 		//System.out.println(this.arrayLabel.toString());
 		System.out.println("*****************************");
-		System.out.print("cout final Dijkstra A* : "+coutFinal);
+		System.out.print("cout final Dijkstra A* : "+ coutFinal);
 		if (this.temps){
 			System.out.println(" min");
 		}
