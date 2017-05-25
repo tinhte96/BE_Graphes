@@ -47,7 +47,7 @@ public class Pcc extends Algo {
 	public void run() {
 
 		long TpsCommence = System.currentTimeMillis();
-		
+
 		System.out.println("Run PCC de " + this.zoneOrigine + ":" + this.origine + " vers " + this.zoneDestination + ":" + this.destination) ;
 
 		// extraire le label de l'origine 
@@ -69,6 +69,8 @@ public class Pcc extends Algo {
 			this.hmap.put(xSommet, xLabel);
 
 			this.arrayLabel.add(xLabel);
+			this.graphe.getDessin().setColor(Color.cyan);
+			this.graphe.getDessin().drawPoint(xSommet.longitude,xSommet.latitude,5);
 
 			for (Arc arc : xSommet.tableauArc){
 
@@ -100,7 +102,7 @@ public class Pcc extends Algo {
 		this.plusCourtChemin();
 
 		long TpsTermine = System.currentTimeMillis();
-		
+
 		//dessiner
 		this.graphe.getDessin().setColor(Color.RED);
 		this.plusCourt.dessineChemin(this.graphe.getDessin());
