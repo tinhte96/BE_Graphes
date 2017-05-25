@@ -1,33 +1,142 @@
 package core ;
 
+import java.awt.Color;
 import java.io.* ;
+import java.util.*;
 import base.Readarg ;
 
 public class Pcc extends Algo {
 
-    // Numero des sommets origine et destination
-    protected int zoneOrigine ;
-    protected int origine ;
+	// Numero des sommets origine et destination
+	protected int zoneOrigine ;
+	protected int origine ;
 
-    protected int zoneDestination ;
-    protected int destination ;
+	protected int zoneDestination ;
+	protected int destination ;
 
-    public Pcc(Graphe gr, PrintStream sortie, Readarg readarg) {
-	super(gr, sortie, readarg) ;
+	protected ArrayList<Label> arrayLabel;
+	protected BinaryHeap<Label> tas;
+	protected HashMap<Sommet,Label> hmap;
 
-	this.zoneOrigine = gr.getZone () ;
-	this.origine = readarg.lireInt ("Numero du sommet d'origine ? ") ;
+	protected boolean temps ;
 
-	// Demander la zone et le sommet destination.
-	this.zoneOrigine = gr.getZone () ;
-	this.destination = readarg.lireInt ("Numero du sommet destination ? ");
-    }
+	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) {
+		super(gr, sortie, readarg) ;
 
-    public void run() {
+		this.tas = new BinaryHeap<Label>();
+		this.hmap = new HashMap<Sommet,Label>();
+		this.arrayLabel = new ArrayList<Label>();
 
-	System.out.println("Run PCC de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
+		this.zoneOrigine = gr.getZone () ;
+		this.origine = readarg.lireInt ("Numero du sommet d'origine ? ") ;
 
-	// A vous d'implementer la recherche de plus court chemin.
-    }
+		// Demander la zone et le sommet destination.
+		this.zoneOrigine = gr.getZone () ;
+		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
+
+		this.temps = temps;
+
+		//construire hmap
+		for (int i = 0; i < this.graphe.nbSommets; i++){
+			Label lab = new Label(false, Double.MAX_VALUE, 0, i);
+			this.hmap.put(this.graphe.tableauSommets[i], lab);	
+		}
+
+	}
+
+	public void run() {
+
+		long TpsCommence = System.currentTimeMillis();
+		
+		System.out.println("Run PCC de " + this.zoneOrigine + ":" + this.origine + " vers " + this.zoneDestination + ":" + this.destination) ;
+
+		// extraire le label de l'origine 
+		Label origineLabel = this.hmap.get(this.graphe.tableauSommets[this.origine]);
+		Label destinationLabel = this.hmap.get(this.graphe.tableauSommets[this.destination]);
+
+		//mettre le cout d'origine 0 et ajouter au binaryHeap
+		origineLabel.setCout(0);
+		origineLabel.setSommetPere(origineLabel.getSommet());
+
+		this.tas.insert(origineLabel);
+
+		while(!this.tas.isEmpty() && !destinationLabel.isMarquage()){
+			Label xLabel = this.tas.deleteMin();
+			xLabel.setMarquage(true);
+
+			Sommet xSommet = this.graphe.tableauSommets[xLabel.getSommet()];
+
+			this.hmap.put(xSommet, xLabel);
+
+			this.arrayLabel.add(xLabel);
+
+			for (Arc arc : xSommet.tableauArc){
+
+				Label yLabel = this.hmap.get(arc.sommetArrive);
+
+				double cout = 0;
+				if (this.temps){
+					cout = arc.coutArc();
+				}
+				else {
+					cout = arc.longueur; 
+				}
+
+				if (!yLabel.isMarquage()){
+					if (yLabel.getCout() > cout  + xLabel.getCout()){
+
+						yLabel.setCout(cout  + xLabel.getCout());
+						yLabel.setEstime(cout + xLabel.getCout());
+						yLabel.setSommetPere(xLabel.getSommet());
+
+						if (this.tas.exist(yLabel)) this.tas.update(yLabel);
+						else this.tas.insert(yLabel);
+
+					}			
+				}		
+			}
+		}
+
+		this.plusCourtChemin();
+
+		long TpsTermine = System.currentTimeMillis();
+		
+		//dessiner
+		this.graphe.getDessin().setColor(Color.RED);
+		this.plusCourt.dessineChemin(this.graphe.getDessin());
+
+		//System.out.println(this.plusCourt.toString());
+		System.out.println("*****************************");
+		System.out.print("cout final Dijkstra standard : "+coutFinal);
+		if (this.temps){
+			System.out.println(" min");
+		}
+		else {
+			System.out.println(" m");
+		}
+		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
+		System.out.println("*****************************");
+
+	}
+
+	public void plusCourtChemin(){
+		// cree un liste du chemin
+		coutFinal = this.hmap.get(this.graphe.tableauSommets[this.destination]).getCout();
+		int somInt = this.destination;
+		Label label;
+		ArrayList<Sommet> arrayChemin = new ArrayList<>();
+		while (somInt != this.origine){
+			Sommet som = this.graphe.tableauSommets[somInt];
+			arrayChemin.add(som);
+			label = this.hmap.get(som);
+			//System.out.println(label.getSommet());
+			somInt = label.getSommetPere();
+		}
+		arrayChemin.add(this.graphe.tableauSommets[this.origine]);
+		Collections.reverse(arrayChemin);
+
+		this.plusCourt = new Chemin(arrayChemin);
+	}
 
 }
+
