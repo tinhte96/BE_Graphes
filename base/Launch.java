@@ -18,110 +18,135 @@ import java.io.* ;
 
 public class Launch {
 
-    private final Readarg readarg ;
+	private final Readarg readarg ;
 
-    public Launch(String[] args) {
-	this.readarg = new Readarg(args) ;
-    }
+	public Launch(String[] args) {
+		this.readarg = new Readarg(args) ;
+	}
 
-    public void afficherMenu () {
-	System.out.println () ;
-	System.out.println ("MENU") ;
-	System.out.println () ;
-	System.out.println ("0 - Quitter") ;
-	System.out.println ("1 - Composantes Connexes") ;
-	System.out.println ("2 - Plus court chemin standard") ;
-	System.out.println ("3 - Plus court chemin A-star") ;
-	System.out.println ("4 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
-	System.out.println ("5 - Charger un fichier de chemin (.path) et le verifier.") ;
-	
-	System.out.println () ;
-    }
+	public void afficherMenu () {
+		System.out.println () ;
+		System.out.println ("MENU") ;
+		System.out.println () ;
+		System.out.println ("0 - Quitter") ;
+		System.out.println ("1 - Composantes Connexes") ;
+		System.out.println ("2 - Plus court chemin standard") ;
+		System.out.println ("3 - Plus court chemin A-star") ;
+		System.out.println ("4 - Cliquer sur la carte pour obtenir un numero de sommet.") ;
+		System.out.println ("5 - Charger un fichier de chemin (.path) et le verifier.") ;
 
-    public static void main(String[] args) {
-	Launch launch = new Launch(args) ;
-	launch.go () ;
-    }
+		System.out.println () ;
+	}
 
-    public void go() {
+	public static void main(String[] args) {
+		Launch launch = new Launch(args) ;
+		launch.go () ;
+	}
 
-	try {
-	    System.out.println ("**") ;
-	    System.out.println ("** Programme de test des algorithmes de graphe.");
-	    System.out.println ("**") ;
-	    System.out.println () ;
+	public void go() {
 
-	    // On obtient ici le nom de la carte a utiliser.
-	    String nomcarte = this.readarg.lireString ("Nom du fichier .map a utiliser ? ") ;
-	    DataInputStream mapdata = Openfile.open (nomcarte) ;
+		try {
+			System.out.println ("**") ;
+			System.out.println ("** Programme de test des algorithmes de graphe.");
+			System.out.println ("**") ;
+			System.out.println () ;
 
-	    boolean display = (1 == this.readarg.lireInt ("Voulez-vous une sortie graphique (0 = non, 1 = oui) ? ")) ;	    
-	    Dessin dessin = (display) ? new DessinVisible(800,600) : new DessinInvisible() ;
+			// On obtient ici le nom de la carte a utiliser.
+			String nomcarte = this.readarg.lireString ("Nom du fichier .map a utiliser ? ") ;
+			DataInputStream mapdata = Openfile.open (nomcarte) ;
 
-	    Graphe graphe = new Graphe(nomcarte, mapdata, dessin) ;
+			boolean display = (1 == this.readarg.lireInt ("Voulez-vous une sortie graphique (0 = non, 1 = oui) ? ")) ;	    
+			Dessin dessin = (display) ? new DessinVisible(800,600) : new DessinInvisible() ;
 
-	    // Boucle principale : le menu est accessible 
-	    // jusqu'a ce que l'on quitte.
-	    boolean continuer = true ;
-	    int choix ;
-	    
-	    while (continuer) {
-		this.afficherMenu () ;
-		choix = this.readarg.lireInt ("Votre choix ? ") ;
-		
-		// Algorithme a executer
-		Algo algo = null ;
-		
-		// Le choix correspond au numero du menu.
-		switch (choix) {
-		case 0 : continuer = false ; break ;
+			Graphe graphe = new Graphe(nomcarte, mapdata, dessin) ;
 
-		case 1 : algo = new Connexite(graphe, this.fichierSortie (), this.readarg) ; break ;
-		
-		case 2 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg) ; break ;
-		
-		case 3 : algo = new PccStar(graphe, this.fichierSortie (), this.readarg) ; break ;
-	
-		case 4 : graphe.situerClick() ; break ;
+			// Boucle principale : le menu est accessible 
+			// jusqu'a ce que l'on quitte.
+			boolean continuer = true ;
+			int choix ;
 
-		case 5 :
-		    String nom_chemin = this.readarg.lireString ("Nom du fichier .path contenant le chemin ? ") ;
-		    graphe.verifierChemin(Openfile.open (nom_chemin), nom_chemin) ;
-		    break ;
+			while (continuer) {
+				this.afficherMenu () ;
+				choix = this.readarg.lireInt ("Votre choix ? ") ;
 
-		default:
-		    System.out.println ("Choix de menu incorrect : " + choix) ;
-		    System.exit(1) ;
+				// Algorithme a executer
+				Algo algo = null ;
+
+				// Le choix correspond au numero du menu.
+				switch (choix) {
+				case 0 : continuer = false ; break ;
+
+				case 1 : algo = new Connexite(graphe, this.fichierSortie (), this.readarg) ; break ;
+
+				case 2 : 
+					System.out.println("Voulez-vous trouver le chemin le plus court en :\n     1) Temps\n     2) Distance\n");
+					choix = this.readarg.lireInt ("Votre choix ? ") ;
+					switch (choix) {
+					case 1 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg,true) ; break ;
+					case 2 : algo = new Pcc(graphe, this.fichierSortie (), this.readarg,false) ; break ;
+					default:
+						System.out.println ("Choix de menu incorrect : " + choix) ;
+						System.exit(1) ;
+					}
+					break;
+
+				case 3 : 
+					System.out.println("Voulez-vous trouver le chemin le plus court en :\n     1) Temps\n     2) Distance\n");
+					choix = this.readarg.lireInt ("Votre choix ? ") ;
+					switch (choix) {
+					case 1 : algo = new PccStar(graphe, this.fichierSortie (), this.readarg,true) ; break ;
+					case 2 : algo = new PccStar(graphe, this.fichierSortie (), this.readarg,false) ; break ;
+					default:
+						System.out.println ("Choix de menu incorrect : " + choix) ;
+						System.exit(1) ;
+					}
+					break;
+
+				case 4 : graphe.situerClick() ; break ;
+
+				case 5 :
+					String nom_chemin = this.readarg.lireString ("Nom du fichier .path contenant le chemin ? ") ;
+					graphe.verifierChemin(Openfile.open (nom_chemin), nom_chemin) ;
+					Chemin chemin = new Chemin(Openfile.open (nom_chemin), nom_chemin, graphe.tableauSommets);
+					System.out.println("Cout du chemin : " + chemin.coutChemin);
+					chemin.dessineChemin(dessin);
+					break ;
+
+				default:
+					System.out.println ("Choix de menu incorrect : " + choix) ;
+					System.exit(1) ;
+				}
+
+				if (algo != null) { 
+					algo.run() ;
+				}
+			}
+
+			System.out.println ("Programme terminé.") ;
+			System.exit(0) ;
+
+
+		} catch (Throwable t) {
+			t.printStackTrace() ;
+			System.exit(1) ;
 		}
-		
-		if (algo != null) { algo.run() ; }
-	    }
-	    
-	    System.out.println ("Programme terminé.") ;
-	    System.exit(0) ;
-	    
-	    
-	} catch (Throwable t) {
-	    t.printStackTrace() ;
-	    System.exit(1) ;
-	}
-    }
-
-    // Ouvre un fichier de sortie pour ecrire les reponses
-    public PrintStream fichierSortie () {
-	PrintStream result = System.out ;
-
-	String nom = this.readarg.lireString ("Nom du fichier de sortie ? ") ;
-
-	if ("".equals(nom)) { nom = "/dev/null" ; }
-
-	try { result = new PrintStream(nom) ; }
-	catch (Exception e) {
-	    System.err.println ("Erreur a l'ouverture du fichier " + nom) ;
-	    System.exit(1) ;
 	}
 
-	return result ;
-    }
+	// Ouvre un fichier de sortie pour ecrire les reponses
+	public PrintStream fichierSortie () {
+		PrintStream result = System.out ;
+
+		String nom = this.readarg.lireString ("Nom du fichier de sortie ? ") ;
+
+		if ("".equals(nom)) { nom = "/dev/null" ; }
+
+		try { result = new PrintStream(nom) ; }
+		catch (Exception e) {
+			System.err.println ("Erreur a l'ouverture du fichier " + nom) ;
+			System.exit(1) ;
+		}
+
+		return result ;
+	}
 
 }
