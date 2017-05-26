@@ -32,7 +32,7 @@ public class Graphe {
 	private int numzone ;
 	
 	// Vitesse max du graphe
-	private int vitesseMaximum = 0;
+	private double vitesse = 0;
 
 	/*
 	 * Ces attributs constituent une structure ad-hoc pour stocker les informations du graphe.
@@ -45,7 +45,7 @@ public class Graphe {
 	// Deux malheureux getters.
 	public Dessin getDessin() { return dessin ; }
 	public int getZone() { return numzone ; }
-	public int getVitesse(){ return (int) (this.vitesseMaximum*(100.0/6.0)) ; }
+	public double getVitesse(){ return this.vitesse ; }
 
 	// Le constructeur cree le graphe en lisant les donnees depuis le DataInputStream
 	public Graphe (String nomCarte, DataInputStream dis, Dessin dessin) {
@@ -74,6 +74,7 @@ public class Graphe {
 			int nb_descripteurs = dis.readInt () ;
 			int nb_nodes = dis.readInt () ;
 			this.nbSommets = nb_nodes;
+			System.out.println(this.nbSommets);
 
 			// Nombre de successeurs enregistrÃ©s dans le fichier.
 			//int[] nsuccesseurs_a_lire = new int[nb_nodes] ;
@@ -101,8 +102,8 @@ public class Graphe {
 				this.tableauDescris[num_descr] = new Descripteur(dis) ;
 
 				// On affiche quelques descripteurs parmi tous.
-				//if (0 == num_descr % (1 + nb_descripteurs / 400))
-					//System.out.println("Descripteur " + num_descr + " = " + this.tableauDescris[num_descr]) ;
+				if (0 == num_descr % (1 + nb_descripteurs / 400))
+					System.out.println("Descripteur " + num_descr + " = " + this.tableauDescris[num_descr]) ;
 			}
 
 			Utils.checkByte(254, dis) ;
@@ -134,9 +135,10 @@ public class Graphe {
 
 					Couleur.set(dessin, tableauDescris[descr_num].getType()) ;
 					
-					if (tableauDescris[descr_num].vitesseMax() > this.vitesseMaximum) {
-						this.vitesseMaximum = tableauDescris[descr_num].vitesseMax();
+					if ((double)tableauDescris[descr_num].vitesseMax() > this.vitesse) {
+						this.vitesse = (double)tableauDescris[descr_num].vitesseMax();
 					}
+					this.vitesse = this.vitesse / 3.6; // from km/h to m/s
 						
 
 					float current_long = tableauSommets[num_node].longitude ;
@@ -161,6 +163,13 @@ public class Graphe {
 					this.tableauSommets[num_node].tableauArc.add(arc);
 					if (arc.descri.isSensUnique() == false){
 						Arc arc2 = new Arc(arc.sommetArrive, arc.sommetDepart, arc.descri, arc.nb_segm, arc.longueur);
+						/*arc2.sommetDepart = arc.sommetArrive;
+	    			arc2.sommetArrive = arc.sommetDepart;
+	    			arc2.descri = arc.descri;
+	    			arc2.nb_segm = arc.nb_segm;
+	    			arc2.segLong = arc.segLong;
+	    			arc2.segLat = arc.segLat;
+	    			arc2.longueur = arc.longueur;*/
 						arc2.segLat = arc.segLat;
 						arc2.segLong = arc.segLong;
 						//System.out.println(" test arc 2 sens "+arc2.toString());
@@ -172,7 +181,7 @@ public class Graphe {
 			Utils.checkByte(253, dis) ;
 
 			System.out.println("Fichier lu : " + nb_nodes + " sommets, " + edges + " aretes, " 
-					+ nb_descripteurs + " descripteurs." ) ;
+					+ nb_descripteurs + " descripteurs.") ;
 
 
 
@@ -196,7 +205,7 @@ public class Graphe {
 	 *  @return la distance entre les deux points en metres.
 	 *  Methode Ã©crite par Thomas Thiebaud, mai 2013
 	 */
-	public double distance(double long1, double lat1, double long2, double lat2) {
+	public static double distance(double long1, double lat1, double long2, double lat2) {
 		double sinLat = Math.sin(Math.toRadians(lat1))*Math.sin(Math.toRadians(lat2));
 		double cosLat = Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2));
 		double cosLong = Math.cos(Math.toRadians(long2-long1));
