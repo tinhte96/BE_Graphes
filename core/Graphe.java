@@ -32,7 +32,7 @@ public class Graphe {
 	private int numzone ;
 	
 	// Vitesse max du graphe
-	private double vitesse = 0;
+	private double vitesseMaximum = 0;
 
 	/*
 	 * Ces attributs constituent une structure ad-hoc pour stocker les informations du graphe.
@@ -45,7 +45,7 @@ public class Graphe {
 	// Deux malheureux getters.
 	public Dessin getDessin() { return dessin ; }
 	public int getZone() { return numzone ; }
-	public double getVitesse(){ return this.vitesse ; }
+	public double getVitesseMaximum(){ return this.vitesseMaximum ; }
 
 	// Le constructeur cree le graphe en lisant les donnees depuis le DataInputStream
 	public Graphe (String nomCarte, DataInputStream dis, Dessin dessin) {
@@ -135,12 +135,10 @@ public class Graphe {
 
 					Couleur.set(dessin, tableauDescris[descr_num].getType()) ;
 					
-					if ((double)tableauDescris[descr_num].vitesseMax() > this.vitesse) {
-						this.vitesse = (double)tableauDescris[descr_num].vitesseMax();
+					if ((double)tableauDescris[descr_num].vitesseMax() > this.vitesseMaximum && tableauDescris[descr_num].vitesseMax() <= 90) {
+						this.vitesseMaximum = (double)tableauDescris[descr_num].vitesseMax();
 					}
-					this.vitesse = this.vitesse / 3.6; // from km/h to m/s
-						
-
+					
 					float current_long = tableauSommets[num_node].longitude ;
 					float current_lat  = tableauSommets[num_node].latitude;
 
@@ -170,6 +168,8 @@ public class Graphe {
 					}		
 				}
 			}
+			this.vitesseMaximum = this.vitesseMaximum / 3.6; // de km/h a m/s	
+
 
 			Utils.checkByte(253, dis) ;
 
