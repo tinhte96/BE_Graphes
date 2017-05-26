@@ -148,7 +148,6 @@ public class Pcc extends Algo {
 			Sommet som = this.graphe.tableauSommets[somInt];
 			arrayChemin.add(som);
 			label = this.hmap.get(som);
-			System.out.println(label.getSommet());
 			somInt = label.getSommetPere();
 		}
 		
