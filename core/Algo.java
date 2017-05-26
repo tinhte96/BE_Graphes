@@ -13,12 +13,14 @@ public abstract class Algo {
 
 	protected Chemin plusCourt;
 	protected double coutFinal; // soit en temps soit en distance
+	
+	protected boolean valide = true;
 
 	protected Algo(Graphe gr, PrintStream fichierSortie, Readarg readarg) {
 		this.graphe = gr ;
 		this.sortie = fichierSortie ;
 	}
 
-	public abstract void run() throws SommetsConnectesException ;
+	public abstract void run() throws SommetsConnectesException, NumeroSommetException ;
 
 }
