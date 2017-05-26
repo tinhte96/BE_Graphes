@@ -20,7 +20,7 @@ public class Pcc extends Algo {
 
 	protected boolean temps ;
 
-	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) {
+	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) throws NumeroSommetException {
 		super(gr, sortie, readarg) ;
 
 		this.tas = new BinaryHeap<Label>();
@@ -33,7 +33,9 @@ public class Pcc extends Algo {
 		// Demander la zone et le sommet destination.
 		this.zoneOrigine = gr.getZone () ;
 		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
-
+		if (0 > this.origine || this.origine >= gr.nbSommets || 0 > this.origine || this.origine >= gr.nbSommets){
+			throw new NumeroSommetException(" les sommets n'existent pas dans ce carte !!! peace");
+		}
 		this.temps = temps;
 
 		//construire hmap
@@ -44,7 +46,7 @@ public class Pcc extends Algo {
 
 	}
 
-	public void run() {
+	public void run() throws SommetsConnectesException {
 
 		long TpsCommence = System.currentTimeMillis();
 
@@ -98,6 +100,10 @@ public class Pcc extends Algo {
 				}		
 			}
 		}
+		
+		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
+			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
+		}
 
 		this.plusCourtChemin();
 
@@ -121,7 +127,7 @@ public class Pcc extends Algo {
 
 	}
 
-	public void plusCourtChemin(){
+	public void plusCourtChemin() {
 		// cree un liste du chemin
 		coutFinal = this.hmap.get(this.graphe.tableauSommets[this.destination]).getCout();
 		int somInt = this.destination;
@@ -131,7 +137,7 @@ public class Pcc extends Algo {
 			Sommet som = this.graphe.tableauSommets[somInt];
 			arrayChemin.add(som);
 			label = this.hmap.get(som);
-			//System.out.println(label.getSommet());
+			System.out.println(label.getSommet());
 			somInt = label.getSommetPere();
 		}
 		arrayChemin.add(this.graphe.tableauSommets[this.origine]);

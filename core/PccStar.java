@@ -1,20 +1,17 @@
 package core ;
 
-import base.*;
 import java.io.* ;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import base.Readarg ;
 
 public class PccStar extends Pcc {
 
-	public PccStar(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) {
+	public PccStar(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) throws NumeroSommetException {
 		super(gr, sortie, readarg,temps) ;
 	}
 
-	public void run() {
+	public void run() throws SommetsConnectesException {
 
 		long TpsCommence = System.currentTimeMillis();
 
@@ -55,7 +52,7 @@ public class PccStar extends Pcc {
 				//System.out.println("ylabel : "+ yLabel.toString());
 
 				double cout = 0;
-				trajetAVol = this.graphe.distance(arc.sommetArrive.longitude, arc.sommetArrive.latitude, destinationSommet.longitude, destinationSommet.latitude);
+				trajetAVol = Graphe.distance(arc.sommetArrive.longitude, arc.sommetArrive.latitude, destinationSommet.longitude, destinationSommet.latitude);
 
 				if (this.temps){
 					cout = arc.coutArc() ; 
@@ -70,6 +67,7 @@ public class PccStar extends Pcc {
 
 						yLabel.setEstime(cout + xLabel.getCout()+ trajetAVol);
 						yLabel.setCout(cout + xLabel.getCout());
+						//System.out.println("cout, estime : " + (cout+xLabel.getCout()) +" , "+ trajetAVol);
 						yLabel.setSommetPere(xLabel.getSommet());
 
 						//System.out.println("yLabel changé :" + yLabel.toString());
@@ -81,6 +79,10 @@ public class PccStar extends Pcc {
 
 				}
 			}
+		}
+		
+		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
+			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
 		}
 
 		this.plusCourtChemin();
