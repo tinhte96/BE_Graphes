@@ -32,7 +32,6 @@ public class Descripteur {
      * coastline      -> 'z'
     */
 
-
     private char type ;
 
     private boolean sensUnique ;
@@ -54,41 +53,39 @@ public class Descripteur {
 
     public Descripteur (DataInputStream dis) throws IOException {
 	
-	this.type = (char)dis.readUnsignedByte() ;
-	int x = dis.readUnsignedByte() ;
-	this.sensUnique = (x & 0x80) > 0 ;
-	this.vitMax = (x & 0x7F) * 5 ;
-	this.nom = dis.readUTF() ;
+    	this.type = (char)dis.readUnsignedByte() ;
+    	int x = dis.readUnsignedByte() ;
+    	this.sensUnique = (x & 0x80) > 0 ;
+    	this.vitMax = (x & 0x7F) * 5 ;
+    	this.nom = dis.readUTF() ;
     }
-    
-    public Descripteur (){};
 
     public String toString() {
-	String oneway = "" ;
+    	String oneway = "" ;
 	
-	if (this.sensUnique) { oneway = " (oneway) " ; }
-	return showType() + " : " + nom + " " + oneway + vitMax + " km/h max " ;
+    	if (this.sensUnique) { oneway = " (oneway) " ; }
+    	return showType() + " : " + nom + " " + oneway + vitMax + " km/h max " ;
     }
 
     public String showType() {
-	String result = "unknown" ;
-	switch (this.type) {
-	case 'a': result = "autoroute" ; break ;
-	case 'b':
-	case 'c':
-	case 'd':
-	case 'e':
-	case 'f':
-	case 'g':
-	case 'h':
-	case 'i':
-	case 'j':
-	case 'k':
-	case 'l':
-	case 'm':
-	case 'n':
-	case 'o': result = "route" ; break ;
-	case 'z': result = "cote" ; break ;
+    	String result = "unknown" ;
+    	switch (this.type) {
+    	case 'a': result = "autoroute" ; break ;
+    	case 'b':
+    	case 'c':
+    	case 'd':
+    	case 'e':
+    	case 'f':
+		case 'g':
+		case 'h':
+		case 'i':
+		case 'j':
+		case 'k':
+		case 'l':
+		case 'm':
+		case 'n':
+		case 'o': result = "route" ; break ;
+		case 'z': result = "cote" ; break ;
 	default : break ;
 	}
 

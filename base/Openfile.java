@@ -18,20 +18,21 @@ public class Openfile {
     // Le programme examine chaque dossier dans l'ordre jusqu'a trouver celui qui contient la carte voulue
     private static final String[] datadirs = 
     {  	// NE MODIFIEZ PAS CELUI-CI
-	// car il permet de tester en etant a l'INSA.
-	"/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps",
+    	// car il permet de tester en etant a l'INSA.
+    	"/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/Maps",
 
-	// Celui-ci pour les chemins
-	"/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/",
+    	// Celui-ci pour les chemins
+    	"/home/commetud/3eme Annee MIC/Graphes-et-Algorithmes/",
 
         // On cherche aussi dans le sous-repertoire local "Maps" (s'il existe)
-	"Maps", 
+    	"Maps", 
 
-	// et dans le repertoire courant (Unix uniquement)
-	".",
+    	// et dans le repertoire courant (Unix uniquement)
+    	".",
 
-	// Si vous utilisez votre propre dossier pour les donnees, mettez-le ici.
-	"/home/votrepropredossier/a/vous",
+    	// Si vous utilisez votre propre dossier pour les donnees, mettez-le ici.
+    	"/home/xin/Documents/INSA/3A/Java/Maps",
+    	"/home/xin/Documents/INSA/3A/Java/GraphesInitINSA",
     } ;
 
     // Extension testees. Garder l'extension vide dans la liste.
