@@ -11,10 +11,46 @@ public class PccStar extends Pcc {
 		super(gr, sortie, readarg,temps) ;
 	}
 
-	public void run() throws SommetsConnectesException {
+	public void run() throws SommetsConnectesException, NumeroSommetException {
 
 		long TpsCommence = System.currentTimeMillis();
 
+		if(!valide){
+			throw new NumeroSommetException(" les sommets n'existent pas dans ce carte !!! peace");
+		}
+		
+		this.Astar();
+		
+		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
+			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
+		}
+		
+		this.coutFinal = this.hmap.get(this.graphe.tableauSommets[this.destination]).getCout();
+
+		this.plusCourtChemin();
+
+		long TpsTermine = System.currentTimeMillis();
+
+		//dessiner
+		this.graphe.getDessin().setColor(Color.BLUE);
+		this.plusCourt.dessineChemin(this.graphe.getDessin());
+
+		//System.out.println(this.plusCourt.toString());
+		//System.out.println(this.arrayLabel.toString());
+		System.out.println("*****************************");
+		System.out.print("cout final Dijkstra A* : "+ coutFinal);
+		if (this.temps){
+			System.out.println(" min");
+		}
+		else {
+			System.out.println(" m");
+		}
+		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
+		System.out.println("*****************************");
+
+	}
+	
+	public void Astar (){
 		System.out.println("Run PCC-Star de " + zoneOrigine + ":" + origine + " vers " + zoneDestination + ":" + destination) ;
 
 		// extraire le label de l'origine 
@@ -81,30 +117,5 @@ public class PccStar extends Pcc {
 			}
 		}
 		
-		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
-			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
-		}
-
-		this.plusCourtChemin();
-
-		long TpsTermine = System.currentTimeMillis();
-
-		//dessiner
-		this.graphe.getDessin().setColor(Color.BLUE);
-		this.plusCourt.dessineChemin(this.graphe.getDessin());
-
-		//System.out.println(this.plusCourt.toString());
-		//System.out.println(this.arrayLabel.toString());
-		System.out.println("*****************************");
-		System.out.print("cout final Dijkstra A* : "+ coutFinal);
-		if (this.temps){
-			System.out.println(" min");
-		}
-		else {
-			System.out.println(" m");
-		}
-		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
-		System.out.println("*****************************");
-
 	}
 }

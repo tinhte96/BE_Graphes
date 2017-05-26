@@ -20,7 +20,7 @@ public class Pcc extends Algo {
 
 	protected boolean temps ;
 
-	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) throws NumeroSommetException {
+	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) {
 		super(gr, sortie, readarg) ;
 
 		this.tas = new BinaryHeap<Label>();
@@ -31,11 +31,12 @@ public class Pcc extends Algo {
 		this.origine = readarg.lireInt ("Numero du sommet d'origine ? ") ;
 
 		// Demander la zone et le sommet destination.
-		this.zoneOrigine = gr.getZone () ;
+		this.zoneDestination = gr.getZone () ;
 		this.destination = readarg.lireInt ("Numero du sommet destination ? ");
-		if (0 > this.origine || this.origine >= gr.nbSommets || 0 > this.origine || this.origine >= gr.nbSommets){
-			throw new NumeroSommetException(" les sommets n'existent pas dans ce carte !!! peace");
-		}
+		
+		if (0 > this.origine || this.origine >= gr.nbSommets) valide = false;
+		if (0 > this.destination || this.destination >= gr.nbSommets) valide = false;
+		
 		this.temps = temps;
 
 		//construire hmap
@@ -46,10 +47,45 @@ public class Pcc extends Algo {
 
 	}
 
-	public void run() throws SommetsConnectesException {
+	public void run() throws SommetsConnectesException, NumeroSommetException {
 
 		long TpsCommence = System.currentTimeMillis();
+		
+		if (!valide){
+			throw new NumeroSommetException(" les sommets n'existent pas dans ce carte !!! peace");
+		}
 
+		this.Dijsktra();
+		
+		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
+			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
+		}
+		
+		this.coutFinal = this.hmap.get(this.graphe.tableauSommets[this.destination]).getCout();
+
+		this.plusCourtChemin();
+
+		long TpsTermine = System.currentTimeMillis();
+
+		//dessiner
+		this.graphe.getDessin().setColor(Color.RED);
+		this.plusCourt.dessineChemin(this.graphe.getDessin());
+
+		//System.out.println(this.plusCourt.toString());
+		System.out.println("*****************************");
+		System.out.print("cout final Dijkstra standard : "+coutFinal);
+		if (this.temps){
+			System.out.println(" min");
+		}
+		else {
+			System.out.println(" m");
+		}
+		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
+		System.out.println("*****************************");
+
+	}
+	
+	public void Dijsktra() {
 		System.out.println("Run PCC de " + this.zoneOrigine + ":" + this.origine + " vers " + this.zoneDestination + ":" + this.destination) ;
 
 		// extraire le label de l'origine 
@@ -100,39 +136,14 @@ public class Pcc extends Algo {
 				}		
 			}
 		}
-		
-		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
-			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
-		}
-
-		this.plusCourtChemin();
-
-		long TpsTermine = System.currentTimeMillis();
-
-		//dessiner
-		this.graphe.getDessin().setColor(Color.RED);
-		this.plusCourt.dessineChemin(this.graphe.getDessin());
-
-		//System.out.println(this.plusCourt.toString());
-		System.out.println("*****************************");
-		System.out.print("cout final Dijkstra standard : "+coutFinal);
-		if (this.temps){
-			System.out.println(" min");
-		}
-		else {
-			System.out.println(" m");
-		}
-		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
-		System.out.println("*****************************");
-
 	}
 
 	public void plusCourtChemin() {
 		// cree un liste du chemin
-		coutFinal = this.hmap.get(this.graphe.tableauSommets[this.destination]).getCout();
 		int somInt = this.destination;
 		Label label;
 		ArrayList<Sommet> arrayChemin = new ArrayList<>();
+		
 		while (somInt != this.origine){
 			Sommet som = this.graphe.tableauSommets[somInt];
 			arrayChemin.add(som);
@@ -140,6 +151,7 @@ public class Pcc extends Algo {
 			System.out.println(label.getSommet());
 			somInt = label.getSommetPere();
 		}
+		
 		arrayChemin.add(this.graphe.tableauSommets[this.origine]);
 		Collections.reverse(arrayChemin);
 
