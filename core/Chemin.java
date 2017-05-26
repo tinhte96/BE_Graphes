@@ -14,70 +14,70 @@ import java.util.ArrayList;
 import base.Utils;
 
 public class Chemin {
-	
+
 	/*
 	 * Attributs
 	 */
 	public Sommet[] listeSommets;
 	public int nbSommets;
 	public double coutChemin = 0;     
-	
-	
+
+
 	/*
 	 *Constructeur 
 	 */
-	
+
 	public Chemin (DataInputStream dis, String nom_chemin, Sommet[] tableauSommets){
 		try {
-		    
-		    // Verification du magic number et de la version du format du fichier .path
-		    int magic = dis.readInt () ;
-		    int version = dis.readInt () ;
 
-		    // Lecture de l'identifiant de carte
-		    int path_carte = dis.readInt () ;
-		    System.out.println(path_carte);
+			// Verification du magic number et de la version du format du fichier .path
+			int magic = dis.readInt () ;
+			int version = dis.readInt () ;
 
-		    int nb_noeuds = dis.readInt () ;
-		    this.nbSommets = nb_noeuds;
+			// Lecture de l'identifiant de carte
+			int path_carte = dis.readInt () ;
+			System.out.println(path_carte);
 
-		    // Origine du chemin
-		    int first_zone = dis.readUnsignedByte() ;
-		    int first_node = Utils.read24bits(dis) ;
+			int nb_noeuds = dis.readInt () ;
+			this.nbSommets = nb_noeuds;
 
-		    // Destination du chemin
-		    int last_zone  = dis.readUnsignedByte() ;
-		    int last_node = Utils.read24bits(dis) ;
+			// Origine du chemin
+			int first_zone = dis.readUnsignedByte() ;
+			int first_node = Utils.read24bits(dis) ;
+
+			// Destination du chemin
+			int last_zone  = dis.readUnsignedByte() ;
+			int last_node = Utils.read24bits(dis) ;
 
 
-		    int current_zone = 0 ;
-		    int current_node = 0 ;
+			int current_zone = 0 ;
+			int current_node = 0 ;
 
-		    this.listeSommets = new Sommet[nb_noeuds];
-		    // Tous les noeuds du chemin
-		    for (int i = 0 ; i < nb_noeuds ; i++) {
-		    	current_zone = dis.readUnsignedByte() ;
-		    	current_node = Utils.read24bits(dis) ;
-		    	this.listeSommets[i] = tableauSommets[current_node];
-		    }
-		    
-		    this.coutChemin() ; //J'ai chang� ca !!!!
+			this.listeSommets = new Sommet[nb_noeuds];
+			// Tous les noeuds du chemin
+			for (int i = 0 ; i < nb_noeuds ; i++) {
+				current_zone = dis.readUnsignedByte() ;
+				current_node = Utils.read24bits(dis) ;
+				this.listeSommets[i] = tableauSommets[current_node];
+			}
+
+			this.coutChemin() ; //J'ai chang� ca !!!!
 
 		} catch (IOException e) {
-		    e.printStackTrace() ;
-		    System.exit(1) ;
+			e.printStackTrace() ;
+			System.exit(1) ;
 		}
 	}
-	
+
 	public Chemin(ArrayList<Sommet> arrayList){
 		this.nbSommets = arrayList.size();
 		this.listeSommets = arrayList.toArray(new Sommet[this.nbSommets]);
 	}
-	
+
 	/*
 	 * Méthodes
 	 */
-	
+
 	// calculer le cout de chemin
 	public void coutChemin(){   
 		Arc arc = new Arc();
@@ -88,9 +88,9 @@ public class Chemin {
 			this.coutChemin += arc.coutArc();
 			//System.out.println("cout totale "+ "numero "+i+" "+this.coutChemin);
 		}
-		
+
 	} 
-	
+
 	/*
 	 *  dessiner le chemin, c'est pour tester visuelement
 	 *  les sommets en noir, les arcs en bleu
@@ -109,7 +109,7 @@ public class Chemin {
 		dessin.setColor(Color.black);
 		dessin.drawPoint(this.listeSommets[this.nbSommets-1].longitude, this.listeSommets[this.nbSommets-1].latitude, 10);
 	}
-	
+
 	// afficher la description d'un chemin
 	public String toString(){
 		String src = new String();
@@ -118,7 +118,7 @@ public class Chemin {
 		}
 		return src;
 	}
-	
+
 }
 
 
