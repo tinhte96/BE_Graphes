@@ -163,13 +163,6 @@ public class Graphe {
 					this.tableauSommets[num_node].tableauArc.add(arc);
 					if (arc.descri.isSensUnique() == false){
 						Arc arc2 = new Arc(arc.sommetArrive, arc.sommetDepart, arc.descri, arc.nb_segm, arc.longueur);
-						/*arc2.sommetDepart = arc.sommetArrive;
-	    			arc2.sommetArrive = arc.sommetDepart;
-	    			arc2.descri = arc.descri;
-	    			arc2.nb_segm = arc.nb_segm;
-	    			arc2.segLong = arc.segLong;
-	    			arc2.segLat = arc.segLat;
-	    			arc2.longueur = arc.longueur;*/
 						arc2.segLat = arc.segLat;
 						arc2.segLong = arc.segLong;
 						//System.out.println(" test arc 2 sens "+arc2.toString());
