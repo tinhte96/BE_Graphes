@@ -135,7 +135,7 @@ public class Graphe {
 
 					Couleur.set(dessin, tableauDescris[descr_num].getType()) ;
 					
-					if ((double)tableauDescris[descr_num].vitesseMax() > this.vitesseMaximum && tableauDescris[descr_num].vitesseMax() <= 90) {
+					if ((double)tableauDescris[descr_num].vitesseMax() > this.vitesseMaximum) {
 						this.vitesseMaximum = (double)tableauDescris[descr_num].vitesseMax();
 					}
 					
@@ -163,7 +163,6 @@ public class Graphe {
 						Arc arc2 = new Arc(arc.sommetArrive, arc.sommetDepart, arc.descri, arc.nb_segm, arc.longueur);
 						arc2.segLat = arc.segLat;
 						arc2.segLong = arc.segLong;
-						//System.out.println(" test arc 2 sens "+arc2.toString());
 						this.tableauSommets[dest_node].tableauArc.add(arc2);
 					}		
 				}

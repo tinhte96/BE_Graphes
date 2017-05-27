@@ -61,8 +61,8 @@ public class Chemin {
 				this.listeSommets[i] = tableauSommets[current_node];
 			}
 
-			this.coutChemin() ; //J'ai chang� ca !!!!
-
+			this.coutChemin() ; 
+			
 		} catch (IOException e) {
 			e.printStackTrace() ;
 			System.exit(1) ;
@@ -73,6 +73,8 @@ public class Chemin {
 		this.nbSommets = arrayList.size();
 		this.listeSommets = arrayList.toArray(new Sommet[this.nbSommets]);
 	}
+	
+	public Chemin(){}
 
 	/*
 	 * Méthodes
@@ -84,9 +86,7 @@ public class Chemin {
 		//System.out.println(this.nbSommets);
 		for (int i = 0; i < this.nbSommets-1;i++){
 			arc = this.listeSommets[i].trouveArc(this.listeSommets[i+1]);
-			//System.out.print("arc "+ arc.sommetDepart.numero +" "+arc.sommetArrive.numero+"      " );
 			this.coutChemin += arc.coutArc();
-			//System.out.println("cout totale "+ "numero "+i+" "+this.coutChemin);
 		}
 
 	} 
@@ -96,14 +96,10 @@ public class Chemin {
 	 *  les sommets en noir, les arcs en bleu
 	 */
 	public void dessineChemin(Dessin dessin){
-		//System.out.println("nb sommets "+this.nbSommets);
 		for (int i = 0; i < this.nbSommets-1; i++){
-			//System.out.println(i);
-			//dessin.setColor(Color.RED);
 			dessin.drawPoint(this.listeSommets[i].longitude, this.listeSommets[i].latitude, 10);
 			boolean inverse = (null == this.listeSommets[i].trouveArc(this.listeSommets[i+1]));
 			Arc arc = (! inverse) ? this.listeSommets[i].trouveArc(this.listeSommets[i+1]) : this.listeSommets[i+1].trouveArc(this.listeSommets[i]);
-			//System.out.println("sommet "+i+"\ndessiner un arc dans dessinChemin : "+arc.toString());
 			arc.desssinArc(dessin);
 		}
 		dessin.setColor(Color.black);

@@ -52,11 +52,9 @@ public class Arc {
 		float current_lat = this.sommetDepart.latitude;
 		float delta_long ;
 		float delta_lat ;
-		//System.out.println("tester segments "+"\n"+"depart : "+this.sommetDepart.numero+" "+this.sommetDepart.longitude+" "+this.sommetDepart.latitude);
 
 		dessin.setWidth(2);
-		for (int i = 0 ; i < nb_segm ; i++) {
-			//dessin.setColor(Color.BLUE);	
+		for (int i = 0 ; i < nb_segm ; i++) {	
 			dessin.drawPoint(current_long, current_lat, 5);
 			delta_long = this.segLong[i];
 			delta_lat = this.segLat[i];
@@ -64,10 +62,8 @@ public class Arc {
 
 			current_long += delta_long ;
 			current_lat  += delta_lat ;
-			//System.out.print("("+current_long+" ; "+current_lat+"), ");
 		}
 		dessin.drawLine(current_long, current_lat, this.sommetArrive.longitude,this.sommetArrive.latitude);	
-		//System.out.println("destination "+this.sommetArrive.longitude+" "+this.sommetArrive.latitude);
 	}
 
 	public String toString(){
