@@ -45,6 +45,8 @@ public class PccStar extends Pcc {
 			System.out.println(" m");
 		}
 		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
+		System.out.println("NbTas : " + nbtas);
+		System.out.println("TasMax : " + tasmax);
 		System.out.println("*****************************");
 
 	}
@@ -65,9 +67,12 @@ public class PccStar extends Pcc {
 		double trajetAVol;
 
 		this.tas.insert(origineLabel);
+		nbtas += 1;
+		tasmax += 1;
 
 		while(!this.tas.isEmpty() && !destinationLabel.isMarquage()){
 			Label xLabel = this.tas.deleteMin();
+			tasmax -= 1;
 			xLabel.setMarquage(true);
 
 			Sommet xSommet = this.graphe.tableauSommets[xLabel.getSommet()];
@@ -79,7 +84,7 @@ public class PccStar extends Pcc {
 			this.graphe.getDessin().drawPoint(xSommet.longitude,xSommet.latitude,5);
 
 			for (Arc arc : xSommet.tableauArc){
-
+				
 				Label yLabel = this.hmap.get(arc.sommetArrive);
 
 				double cout = 0;
@@ -87,7 +92,8 @@ public class PccStar extends Pcc {
 
 				if (this.temps){
 					cout = arc.coutArc() ; 
-					trajetAVol = (trajetAVol / this.graphe.getVitesseMaximum())/60.0;// trajet a vol est valeur de temps en minutes
+					trajetAVol = (trajetAVol / this.graphe.getVitesseMaximum())/60.0;
+					// trajet a vol est valeur de temps en minutes
 				} 
 				else {
 					cout = arc.longueur;
@@ -95,12 +101,17 @@ public class PccStar extends Pcc {
 
 				if (!yLabel.isMarquage()){
 					if (yLabel.getCout() > cout + xLabel.getCout()){
+
 						yLabel.setEstime(cout + xLabel.getCout()+ trajetAVol);
 						yLabel.setCout(cout + xLabel.getCout());
 						yLabel.setSommetPere(xLabel.getSommet());
 
 						if (this.tas.exist(yLabel)) this.tas.update(yLabel);
-						else this.tas.insert(yLabel);
+						else {
+							this.tas.insert(yLabel);
+							nbtas += 1;
+							tasmax += 1;
+						}
 
 					}
 

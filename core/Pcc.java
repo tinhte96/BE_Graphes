@@ -19,6 +19,8 @@ public class Pcc extends Algo {
 	protected HashMap<Sommet,Label> hmap;
 
 	protected boolean temps ;
+	protected int nbtas = 0;
+	protected int tasmax = 0;
 
 	public Pcc(Graphe gr, PrintStream sortie, Readarg readarg,boolean temps) {
 		super(gr, sortie, readarg) ;
@@ -71,7 +73,6 @@ public class Pcc extends Algo {
 		this.graphe.getDessin().setColor(Color.RED);
 		this.plusCourt.dessineChemin(this.graphe.getDessin());
 
-		//System.out.println(this.plusCourt.toString());
 		System.out.println("*****************************");
 		System.out.print("cout final Dijkstra standard : "+coutFinal);
 		if (this.temps){
@@ -81,6 +82,8 @@ public class Pcc extends Algo {
 			System.out.println(" m");
 		}
 		System.out.println("Temps d'exécution : " + (TpsTermine - TpsCommence)+" ms");
+		System.out.println("NbTas : " + nbtas);
+		System.out.println("TasMax : " + tasmax);
 		System.out.println("*****************************");
 
 	}
@@ -97,9 +100,12 @@ public class Pcc extends Algo {
 		origineLabel.setSommetPere(origineLabel.getSommet());
 
 		this.tas.insert(origineLabel);
+		nbtas += 1;
+		tasmax += 1;
 
 		while(!this.tas.isEmpty() && !destinationLabel.isMarquage()){
 			Label xLabel = this.tas.deleteMin();
+			tasmax -= 1;
 			xLabel.setMarquage(true);
 
 			Sommet xSommet = this.graphe.tableauSommets[xLabel.getSommet()];
@@ -130,7 +136,11 @@ public class Pcc extends Algo {
 						yLabel.setSommetPere(xLabel.getSommet());
 
 						if (this.tas.exist(yLabel)) this.tas.update(yLabel);
-						else this.tas.insert(yLabel);
+						else {
+							this.tas.insert(yLabel);
+							nbtas += 1;
+							tasmax +=1;
+						}
 
 					}			
 				}		
@@ -154,7 +164,7 @@ public class Pcc extends Algo {
 		arrayChemin.add(this.graphe.tableauSommets[this.origine]);
 		Collections.reverse(arrayChemin);
 
-		this.plusCourt = new Chemin(arrayChemin);
+		this.plusCourt =  new Chemin(arrayChemin);
 	}
 
 }
