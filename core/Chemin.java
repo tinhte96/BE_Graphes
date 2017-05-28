@@ -68,7 +68,8 @@ public class Chemin {
 			System.exit(1) ;
 		}
 	}
-
+	
+	//convertir un arrayList en Chemin
 	public Chemin(ArrayList<Sommet> arrayList){
 		this.nbSommets = arrayList.size();
 		this.listeSommets = arrayList.toArray(new Sommet[this.nbSommets]);

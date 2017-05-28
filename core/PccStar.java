@@ -15,12 +15,14 @@ public class PccStar extends Pcc {
 
 		long TpsCommence = System.currentTimeMillis();
 
+		//exception des sommets inexistants
 		if(!valide){
 			throw new NumeroSommetException(" les sommets n'existent pas dans ce carte !!! peace");
 		}
 		
 		this.Astar();
 		
+		//exception des chemins inexistants
 		if (this.arrayLabel.get(this.arrayLabel.size()-1).getSommet() != this.destination){
 			throw new SommetsConnectesException (" le chemin des sommets donnés n'existe pas dans ce carte !!! peace");
 		}
@@ -31,7 +33,7 @@ public class PccStar extends Pcc {
 
 		long TpsTermine = System.currentTimeMillis();
 
-		//dessiner
+		//dessiner le plus court chemin de l'algorithme Astar en blue 
 		this.graphe.getDessin().setColor(Color.BLUE);
 		this.plusCourt.dessineChemin(this.graphe.getDessin());
 
@@ -64,22 +66,25 @@ public class PccStar extends Pcc {
 		origineLabel.setCout(0);
 		origineLabel.setSommetPere(origineLabel.getSommet());
 
+		//heuristique
 		double trajetAVol;
 
 		this.tas.insert(origineLabel);
+		
 		nbtas += 1;
 		tasmax += 1;
 
 		while(!this.tas.isEmpty() && !destinationLabel.isMarquage()){
 			Label xLabel = this.tas.deleteMin();
-			tasmax -= 1;
 			xLabel.setMarquage(true);
-
 			Sommet xSommet = this.graphe.tableauSommets[xLabel.getSommet()];
 
 			this.hmap.put(xSommet, xLabel);
-
 			this.arrayLabel.add(xLabel);
+			
+			tasmax -= 1;
+			
+			//dessiner les sommets visités de l'algorithme Astar en vert
 			this.graphe.getDessin().setColor(Color.green);
 			this.graphe.getDessin().drawPoint(xSommet.longitude,xSommet.latitude,5);
 

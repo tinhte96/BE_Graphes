@@ -43,9 +43,7 @@ public class Arc {
 	}
 
 	/*
-	 *  dessiner un arc
-	 *  un arc est dessiné en bleu, un arc est composé par des segments, 
-	 *  les points extrêmités d'un segment sont dessinés en les petits points en bleu
+	 *  dessiner un arc en dessinant des segments de cet arc, 
 	 */
 	public void desssinArc(Dessin dessin){
 		float current_long = this.sommetDepart.longitude;

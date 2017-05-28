@@ -105,14 +105,15 @@ public class Pcc extends Algo {
 
 		while(!this.tas.isEmpty() && !destinationLabel.isMarquage()){
 			Label xLabel = this.tas.deleteMin();
-			tasmax -= 1;
 			xLabel.setMarquage(true);
-
 			Sommet xSommet = this.graphe.tableauSommets[xLabel.getSommet()];
-
+			
 			this.hmap.put(xSommet, xLabel);
-
 			this.arrayLabel.add(xLabel);
+			
+			tasmax -= 1;
+
+			//colorer les sommets visités en cyan
 			this.graphe.getDessin().setColor(Color.cyan);
 			this.graphe.getDessin().drawPoint(xSommet.longitude,xSommet.latitude,5);
 
@@ -148,6 +149,7 @@ public class Pcc extends Algo {
 		}
 	}
 
+	//construire le plus court chemin
 	public void plusCourtChemin() {
 		// cree un liste du chemin
 		int somInt = this.destination;
